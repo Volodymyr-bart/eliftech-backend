@@ -7,6 +7,9 @@ export class Drug extends Document {
   title: string;
 
   @Prop()
+  image: string;
+
+  @Prop()
   price: number;
 
   @Prop()

@@ -30,11 +30,18 @@ export class ShopsController {
   }
 
   @Patch(':shopId/add-drug')
-  update(
+  addDrug(
     @Param('shopId') shopId: string,
     @Body() { idDrug }: { idDrug: string },
   ) {
     return this.shopsService.addDrugToShop(shopId, idDrug);
+  }
+  @Patch(':shopId/delete-drug')
+  deleteDrug(
+    @Param('shopId') shopId: string,
+    @Body() { idDrug }: { idDrug: string },
+  ) {
+    return this.shopsService.deleteDrugFromShop(shopId, idDrug);
   }
 
   @Delete(':id')
