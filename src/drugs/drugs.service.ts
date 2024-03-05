@@ -1,26 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateDrugDto } from './dto/create-drug.dto';
 import { UpdateDrugDto } from './dto/update-drug.dto';
+import { Drug } from 'src/schemas/drug.schema';
 
 @Injectable()
 export class DrugsService {
-  create(createDrugDto: CreateDrugDto) {
-    return 'This action adds a new drug';
+  constructor(@InjectModel(Drug.name) private drugModel: Model<Drug>) {}
+
+  async create(createDrugDto: CreateDrugDto): Promise<Drug> {
+    const newDrug = new this.drugModel(createDrugDto);
+    return newDrug.save();
   }
 
-  findAll() {
-    return `This action returns all drugs`;
+  async findAll(): Promise<Drug[]> {
+    return this.drugModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} drug`;
+  async findOne(id: string): Promise<Drug> {
+    const drug = await this.drugModel.findById(id);
+    if (!drug) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
+    return drug;
   }
 
-  update(id: number, updateDrugDto: UpdateDrugDto) {
-    return `This action updates a #${id} drug`;
+  async update(id: string, updateDrugDto: UpdateDrugDto): Promise<Drug> {
+    const updatedDrug = await this.drugModel.findByIdAndUpdate(
+      id,
+      updateDrugDto,
+      { new: true },
+    );
+    if (!updatedDrug) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
+    return updatedDrug;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} drug`;
+  async remove(id: string): Promise<Drug> {
+    const deletedDrug = await this.drugModel.findByIdAndDelete(id);
+    if (!deletedDrug) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
+    return deletedDrug;
   }
 }
