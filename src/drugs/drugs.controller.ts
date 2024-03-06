@@ -39,16 +39,18 @@ export class DrugsController {
   update(@Param('id') id: string, @Body() updateDrugDto: UpdateDrugDto) {
     return this.drugsService.update(id, updateDrugDto);
   }
-  @Patch(':id')
-  addToShop(@Param('id') id: string, @Body() updateDrugDto: UpdateDrugDto) {
-    return this.drugsService.update(id, updateDrugDto);
+
+  @Post('shops/:shopId/drugs/:drugId')
+  addToShop(@Param('shopId') shopId: string, @Param('drugId') drugId: string) {
+    return this.drugsService.addDrugToShop(drugId, shopId);
   }
-  @Patch(':id')
+
+  @Delete('shops/:shopId/drugs/:drugId')
   deleteFromShop(
-    @Param('id') id: string,
-    @Body() updateDrugDto: UpdateDrugDto,
+    @Param('shopId') shopId: string,
+    @Param('drugId') drugId: string,
   ) {
-    return this.drugsService.update(id, updateDrugDto);
+    return this.drugsService.deleteDrugFromShop(drugId, shopId);
   }
 
   @Delete(':id')

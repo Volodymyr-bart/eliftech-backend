@@ -39,7 +39,7 @@ export class DrugsService {
     return drugsFromShop;
   }
 
-  async addDrugToShop(drugId: string, shopId: string): Promise<Drug[]> {
+  async addDrugToShop(drugId: string, shopId: string): Promise<Drug> {
     const drug = await this.drugModel.findById(drugId);
     if (!drug) {
       throw new HttpException('Not found drug', HttpStatus.NOT_FOUND);
@@ -51,9 +51,9 @@ export class DrugsService {
     drug.shops.push(shop);
     await drug.save();
 
-    return this.drugModel.find().exec();
+    return drug;
   }
-  async deleteDrugFromShop(drugId: string, shopId: string): Promise<Drug[]> {
+  async deleteDrugFromShop(drugId: string, shopId: string): Promise<Drug> {
     const drug = await this.drugModel.findById(drugId);
     if (!drug) {
       throw new HttpException('Not found drug', HttpStatus.NOT_FOUND);
@@ -62,9 +62,10 @@ export class DrugsService {
     if (!shop) {
       throw new HttpException('Not found shop', HttpStatus.NOT_FOUND);
     }
-    // drug.shops.push(shop);
+    // To do Delete
+
     await drug.save();
-    return this.drugModel.find().exec();
+    return drug;
   }
 
   async update(id: string, updateDrugDto: UpdateDrugDto): Promise<Drug> {
