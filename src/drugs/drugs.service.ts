@@ -36,12 +36,6 @@ export class DrugsService {
       throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
     }
     const drugsFromShop = await this.drugModel.find({ shops: shop }).exec();
-    if (!drugsFromShop.length) {
-      throw new HttpException(
-        'Drugs not found for the specified shop',
-        HttpStatus.NOT_FOUND,
-      );
-    }
     return drugsFromShop;
   }
 
