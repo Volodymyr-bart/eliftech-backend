@@ -30,7 +30,7 @@ export class DrugsController {
     return this.drugsService.findOne(id);
   }
 
-  @Get('drugs/:shopId')
+  @Get('drugsFromShop/:shopId')
   getDrugsByShopId(@Param('shopId') shopId: string) {
     return this.drugsService.getDrugsByShopId(shopId);
   }
