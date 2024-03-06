@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Shop } from './shop.schema';
 
 @Schema()
 export class Drug extends Document {
@@ -17,6 +18,9 @@ export class Drug extends Document {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Prop({ type: [{ type: 'ObjectId', ref: 'Shop' }] })
+  shops: Shop[];
 }
 
 export const DrugSchema = SchemaFactory.createForClass(Drug);

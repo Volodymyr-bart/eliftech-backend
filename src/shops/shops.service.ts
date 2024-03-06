@@ -3,14 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Shop } from 'src/schemas/shop.schema';
 import { Model } from 'mongoose';
 import { CreateShopDto } from './dto/create-shop.dto';
-import { DrugsService } from 'src/drugs/drugs.service';
 
 @Injectable()
 export class ShopsService {
-  constructor(
-    @InjectModel(Shop.name) private shopModel: Model<Shop>,
-    private readonly drugService: DrugsService,
-  ) {}
+  constructor(@InjectModel(Shop.name) private shopModel: Model<Shop>) {}
 
   async createShop(createShopDto: CreateShopDto): Promise<Shop> {
     const newShop = new this.shopModel(createShopDto);
@@ -29,44 +25,6 @@ export class ShopsService {
     return this.shopModel.find().exec();
   }
 
-  async addDrugToShop(shopId: string, orderId: string): Promise<Shop> {
-    const shop = await this.shopModel.findById(shopId);
-    if (!shop) {
-      throw new HttpException('Not found shop', HttpStatus.NOT_FOUND);
-    }
-    const drug = await this.drugService.findOne(orderId);
-    if (!drug) {
-      throw new HttpException('Not found drug', HttpStatus.NOT_FOUND);
-    }
-    shop.drugs.push(drug);
-
-    await shop.save();
-    return shop;
-  }
-
-  async deleteDrugFromShop(shopId: string, orderId: string): Promise<Shop> {
-    const shop = await this.shopModel.findById(shopId);
-    if (!shop) {
-      throw new HttpException('Not found shop', HttpStatus.NOT_FOUND);
-    }
-    const drug = await this.drugService.findOne(orderId);
-    if (!drug) {
-      throw new HttpException('Not found drug', HttpStatus.NOT_FOUND);
-    }
-
-    shop.drugs.push(drug);
-
-    await shop.save();
-    return shop;
-  }
-
-  // async addOrderToShop(shopId: string, orderId: string): Promise<Shop> {
-  //   return this.shopModel.findByIdAndUpdate(
-  //     shopId,
-  //     { $push: { orders: orderId } },
-  //     { new: true },
-  //   );
-  // }
   async deleteShop(shopId: string): Promise<Shop> {
     const deletedShop = await this.shopModel.findByIdAndDelete(shopId);
     if (!deletedShop) {

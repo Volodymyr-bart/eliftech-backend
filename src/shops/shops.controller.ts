@@ -29,21 +29,6 @@ export class ShopsController {
     return this.shopsService.getShopById(id);
   }
 
-  @Patch(':shopId/add-drug')
-  addDrug(
-    @Param('shopId') shopId: string,
-    @Body() { idDrug }: { idDrug: string },
-  ) {
-    return this.shopsService.addDrugToShop(shopId, idDrug);
-  }
-  @Patch(':shopId/delete-drug')
-  deleteDrug(
-    @Param('shopId') shopId: string,
-    @Body() { idDrug }: { idDrug: string },
-  ) {
-    return this.shopsService.deleteDrugFromShop(shopId, idDrug);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.shopsService.deleteShop(id);
