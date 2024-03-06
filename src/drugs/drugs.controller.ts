@@ -30,8 +30,24 @@ export class DrugsController {
     return this.drugsService.findOne(id);
   }
 
+  @Get('drugs/:shopId')
+  getDrugsByShopId(@Param('shopId') shopId: string) {
+    return this.drugsService.getDrugsByShopId(shopId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDrugDto: UpdateDrugDto) {
+    return this.drugsService.update(id, updateDrugDto);
+  }
+  @Patch(':id')
+  addToShop(@Param('id') id: string, @Body() updateDrugDto: UpdateDrugDto) {
+    return this.drugsService.update(id, updateDrugDto);
+  }
+  @Patch(':id')
+  deleteFromShop(
+    @Param('id') id: string,
+    @Body() updateDrugDto: UpdateDrugDto,
+  ) {
     return this.drugsService.update(id, updateDrugDto);
   }
 
