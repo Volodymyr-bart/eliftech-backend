@@ -9,16 +9,24 @@ export class ShopsService {
   constructor(@InjectModel(Shop.name) private shopModel: Model<Shop>) {}
 
   async createShop(createShopDto: CreateShopDto): Promise<Shop> {
-    const newShop = new this.shopModel(createShopDto);
-    return newShop.save();
+    try {
+      const newShop = new this.shopModel(createShopDto);
+      return newShop.save();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async getShopById(shopId: string): Promise<Shop> {
-    const shop = await this.shopModel.findById(shopId);
-    if (!shop) {
-      throw new HttpException('Not found shop', HttpStatus.NOT_FOUND);
+    try {
+      const shop = await this.shopModel.findById(shopId);
+      if (!shop) {
+        throw new HttpException('Not found shop', HttpStatus.NOT_FOUND);
+      }
+      return shop;
+    } catch (error) {
+      console.log(error);
     }
-    return shop;
   }
 
   async getAllShops(): Promise<Shop[]> {
@@ -26,10 +34,14 @@ export class ShopsService {
   }
 
   async deleteShop(shopId: string): Promise<Shop> {
-    const deletedShop = await this.shopModel.findByIdAndDelete(shopId);
-    if (!deletedShop) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    try {
+      const deletedShop = await this.shopModel.findByIdAndDelete(shopId);
+      if (!deletedShop) {
+        throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      }
+      return deletedShop;
+    } catch (error) {
+      console.log(error);
     }
-    return deletedShop;
   }
 }

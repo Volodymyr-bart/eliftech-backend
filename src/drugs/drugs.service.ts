@@ -37,96 +37,116 @@ export class DrugsService {
       keyword: string;
     },
   ): Promise<Drug[]> {
-    const shop = await this.shopsService.getShopById(shopId);
-    if (!shop) {
-      throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
-    }
+    try {
+      const shop = await this.shopsService.getShopById(shopId);
+      if (!shop) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
 
-    let drugsFromShop = await this.drugModel.find({ shops: shop }).exec();
-    if (filters.keyword && filters.keyword !== '') {
-      drugsFromShop = drugsFromShop.filter((drug) =>
-        drug.title.toLowerCase().includes(filters.keyword.toLowerCase()),
-      );
+      let drugsFromShop = await this.drugModel.find({ shops: shop }).exec();
+      if (filters.keyword && filters.keyword !== '') {
+        drugsFromShop = drugsFromShop.filter((drug) =>
+          drug.title.toLowerCase().includes(filters.keyword.toLowerCase()),
+        );
+      }
+      switch (filters.filter) {
+        case 'new':
+          drugsFromShop = drugsFromShop.sort(
+            (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+          );
+          break;
+        case 'old':
+          drugsFromShop = drugsFromShop.sort(
+            (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+          );
+          break;
+        case 'expensive':
+          drugsFromShop = drugsFromShop.sort((a, b) => b.price - a.price);
+          break;
+        case 'cheap':
+          drugsFromShop = drugsFromShop.sort((a, b) => a.price - b.price);
+          break;
+        case 'A-Z':
+          drugsFromShop = drugsFromShop.sort((a, b) =>
+            a.title.localeCompare(b.title),
+          );
+          break;
+        case 'Z-A':
+          drugsFromShop = drugsFromShop.sort((a, b) =>
+            b.title.localeCompare(a.title),
+          );
+          break;
+        default:
+          break;
+      }
+      return drugsFromShop;
+    } catch (error) {
+      console.log(error);
     }
-    switch (filters.filter) {
-      case 'new':
-        drugsFromShop = drugsFromShop.sort(
-          (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-        );
-        break;
-      case 'old':
-        drugsFromShop = drugsFromShop.sort(
-          (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
-        );
-        break;
-      case 'expensive':
-        drugsFromShop = drugsFromShop.sort((a, b) => b.price - a.price);
-        break;
-      case 'cheap':
-        drugsFromShop = drugsFromShop.sort((a, b) => a.price - b.price);
-        break;
-      case 'A-Z':
-        drugsFromShop = drugsFromShop.sort((a, b) =>
-          a.title.localeCompare(b.title),
-        );
-        break;
-      case 'Z-A':
-        drugsFromShop = drugsFromShop.sort((a, b) =>
-          b.title.localeCompare(a.title),
-        );
-        break;
-      default:
-        break;
-    }
-    return drugsFromShop;
   }
 
   async addDrugToShop(drugId: string, shopId: string): Promise<Drug> {
-    const drug = await this.drugModel.findById(drugId);
-    if (!drug) {
-      throw new HttpException('Not found drug', HttpStatus.NOT_FOUND);
-    }
-    const shop = await this.shopsService.getShopById(shopId);
-    if (!shop) {
-      throw new HttpException('Not found shop', HttpStatus.NOT_FOUND);
-    }
-    drug.shops.push(shop);
-    await drug.save();
+    try {
+      const drug = await this.drugModel.findById(drugId);
+      if (!drug) {
+        throw new HttpException('Not found drug', HttpStatus.NOT_FOUND);
+      }
+      const shop = await this.shopsService.getShopById(shopId);
+      if (!shop) {
+        throw new HttpException('Not found shop', HttpStatus.NOT_FOUND);
+      }
+      drug.shops.push(shop);
+      await drug.save();
 
-    return drug;
+      return drug;
+    } catch (error) {
+      console.log(error);
+    }
   }
   async deleteDrugFromShop(drugId: string, shopId: string): Promise<Drug> {
-    const drug = await this.drugModel.findById(drugId);
-    if (!drug) {
-      throw new HttpException('Not found drug', HttpStatus.NOT_FOUND);
-    }
-    const shop = await this.shopsService.getShopById(shopId);
-    if (!shop) {
-      throw new HttpException('Not found shop', HttpStatus.NOT_FOUND);
-    }
-    // To do Delete
+    try {
+      const drug = await this.drugModel.findById(drugId);
+      if (!drug) {
+        throw new HttpException('Not found drug', HttpStatus.NOT_FOUND);
+      }
+      const shop = await this.shopsService.getShopById(shopId);
+      if (!shop) {
+        throw new HttpException('Not found shop', HttpStatus.NOT_FOUND);
+      }
+      // To do Delete
 
-    await drug.save();
-    return drug;
+      await drug.save();
+      return drug;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async update(id: string, updateDrugDto: UpdateDrugDto): Promise<Drug> {
-    const updatedDrug = await this.drugModel.findByIdAndUpdate(
-      id,
-      updateDrugDto,
-      { new: true },
-    );
-    if (!updatedDrug) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    try {
+      const updatedDrug = await this.drugModel.findByIdAndUpdate(
+        id,
+        updateDrugDto,
+        { new: true },
+      );
+      if (!updatedDrug) {
+        throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      }
+      return updatedDrug;
+    } catch (error) {
+      console.log(error);
     }
-    return updatedDrug;
   }
 
   async remove(id: string): Promise<Drug> {
-    const deletedDrug = await this.drugModel.findByIdAndDelete(id);
-    if (!deletedDrug) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    try {
+      const deletedDrug = await this.drugModel.findByIdAndDelete(id);
+      if (!deletedDrug) {
+        throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      }
+      return deletedDrug;
+    } catch (error) {
+      console.log(error);
     }
-    return deletedDrug;
   }
 }

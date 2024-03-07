@@ -17,7 +17,17 @@ export class OrdersService {
     }
   }
 
-  async findAll(): Promise<Order[]> {
-    return this.orderModel.find().exec();
+  async findAll(body: { email: string; phone: string }): Promise<Order[]> {
+    try {
+      const { email, phone } = body;
+      const query = {
+        $or: [{ email }, { phone }],
+      };
+      const orders = await this.orderModel.find(query).exec();
+
+      return orders;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
