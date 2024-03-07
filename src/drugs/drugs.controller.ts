@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { DrugsService } from './drugs.service';
 import { CreateDrugDto } from './dto/create-drug.dto';
@@ -31,8 +32,15 @@ export class DrugsController {
   }
 
   @Get('drugsFromShop/:shopId')
-  getDrugsByShopId(@Param('shopId') shopId: string) {
-    return this.drugsService.getDrugsByShopId(shopId);
+  getDrugsByShopId(
+    @Param('shopId') shopId: string,
+    @Query()
+    filters: {
+      filter: string;
+      keyword: string;
+    },
+  ) {
+    return this.drugsService.getDrugsByShopId(shopId, filters);
   }
 
   @Patch(':id')

@@ -1,7 +1,15 @@
-import { Drug } from 'src/schemas/drug.schema';
-
 export class CreateOrderDto {
-  readonly phone: string;
-  readonly email: string;
-  readonly products: { drug: Drug; quantity: number }[];
+  name: string;
+  phone: string;
+  address: string;
+  email: string;
+  drugs: {
+    _id: string;
+    title: string;
+    image: string;
+    price: number;
+    description: string;
+    createdAt: Date;
+    quantity: number;
+  }[];
 }

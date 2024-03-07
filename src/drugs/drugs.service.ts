@@ -30,12 +30,54 @@ export class DrugsService {
     return drug;
   }
 
-  async getDrugsByShopId(shopId: string): Promise<Drug[]> {
+  async getDrugsByShopId(
+    shopId: string,
+    filters: {
+      filter: string;
+      keyword: string;
+    },
+  ): Promise<Drug[]> {
     const shop = await this.shopsService.getShopById(shopId);
     if (!shop) {
       throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
     }
-    const drugsFromShop = await this.drugModel.find({ shops: shop }).exec();
+
+    let drugsFromShop = await this.drugModel.find({ shops: shop }).exec();
+    if (filters.keyword && filters.keyword !== '') {
+      drugsFromShop = drugsFromShop.filter((drug) =>
+        drug.title.toLowerCase().includes(filters.keyword.toLowerCase()),
+      );
+    }
+    switch (filters.filter) {
+      case 'new':
+        drugsFromShop = drugsFromShop.sort(
+          (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+        );
+        break;
+      case 'old':
+        drugsFromShop = drugsFromShop.sort(
+          (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+        );
+        break;
+      case 'expensive':
+        drugsFromShop = drugsFromShop.sort((a, b) => b.price - a.price);
+        break;
+      case 'cheap':
+        drugsFromShop = drugsFromShop.sort((a, b) => a.price - b.price);
+        break;
+      case 'A-Z':
+        drugsFromShop = drugsFromShop.sort((a, b) =>
+          a.title.localeCompare(b.title),
+        );
+        break;
+      case 'Z-A':
+        drugsFromShop = drugsFromShop.sort((a, b) =>
+          b.title.localeCompare(a.title),
+        );
+        break;
+      default:
+        break;
+    }
     return drugsFromShop;
   }
 

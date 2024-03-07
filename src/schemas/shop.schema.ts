@@ -1,17 +1,19 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-// import { Drug } from './drug.schema';
-import { Order } from './orders.schema';
+import { Drug } from './drug.schema';
 
 @Schema()
 export class Shop {
   @Prop()
-  title: string;
+  phone: string;
+
+  @Prop()
+  email: string;
 
   @Prop()
   address: string;
 
-  @Prop({ type: [{ type: 'ObjectId', ref: 'Order' }] })
-  orders: Order[];
+  @Prop()
+  products: { drug: Drug; quantity: number }[];
 }
 
 export const ShopSchema = SchemaFactory.createForClass(Shop);

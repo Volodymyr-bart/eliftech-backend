@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Shop } from './shop.schema';
-import { Drug } from './drug.schema';
 
 @Schema()
 export class Order extends Document {
@@ -9,15 +8,24 @@ export class Order extends Document {
   shop: Shop;
 
   @Prop()
+  name: string;
+
+  @Prop()
   phone: string;
 
   @Prop()
   email: string;
 
-  @Prop({
-    type: [{ drug: { type: 'ObjectId', ref: 'Drug' }, quantity: Number }],
-  })
-  products: { drug: Drug; quantity: number }[];
+  @Prop()
+  drugs: {
+    _id: string;
+    title: string;
+    image: string;
+    price: number;
+    description: string;
+    createdAt: Date;
+    quantity: number;
+  }[];
 
   @Prop({ default: Date.now })
   createdAt: Date;
